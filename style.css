@@ -1,204 +1,88 @@
-@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Poppins:wght@300;400;600&display=swap');
-
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
 }
 
 body{
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-overflow:hidden;
-font-family:'Poppins',sans-serif;
-
-background:linear-gradient(135deg,#fef3ff,#edd7ff,#e9d5ff);
+    height:100vh;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#0b0014;
 }
 
-/* Floating Background */
-
-.bg-hearts{
-position:absolute;
-inset:0;
-overflow:hidden;
-}
-
-.bg-hearts::before{
-
-content:"💜 💖 🌸 ✨ 🩷 💜";
-
-position:absolute;
-
-font-size:28px;
-
-left:-30%;
-
-top:45%;
-
-animation:move 18s linear infinite;
-
-opacity:.3;
-
-}
-
-@keyframes move{
-
-from{
-transform:translateX(-20%);
-}
-
-to{
-transform:translateX(150%);
-}
-
+.background{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:
+    radial-gradient(circle at top, #5b1b8a, #0b0014 60%);
+    z-index:-1;
 }
 
 .container{
-
-position:relative;
-
-z-index:10;
-
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
-
-/* Envelope */
 
 .envelope{
-
-position:relative;
-
-width:340px;
-
-height:230px;
-
-background:#f8d9ff;
-
-border-radius:14px;
-
-box-shadow:0 20px 45px rgba(0,0,0,.15);
-
-overflow:hidden;
-
-cursor:pointer;
-
-transition:.5s;
-
+    width:320px;
+    height:220px;
+    background:#8e44ad;
+    position:relative;
+    border-radius:15px;
+    box-shadow:0 0 40px rgba(255,0,150,0.4);
+    overflow:hidden;
+    transition:0.8s;
 }
 
-.envelope:hover{
-
-transform:translateY(-6px);
-
-}
-
-.top{
-
-position:absolute;
-
-width:100%;
-
-height:120px;
-
-background:#d997ff;
-
-clip-path:polygon(0 0,100% 0,50% 100%);
-
-z-index:3;
-
-transition:.8s;
-
-transform-origin:top;
-
+.envelope-top{
+    position:absolute;
+    width:0;
+    height:0;
+    border-left:160px solid transparent;
+    border-right:160px solid transparent;
+    border-top:110px solid #b56cff;
+    top:0;
 }
 
 .letter{
-
-position:absolute;
-
-left:50%;
-
-top:55%;
-
-transform:translate(-50%,-50%);
-
-width:88%;
-
-background:white;
-
-padding:22px;
-
-border-radius:10px;
-
-text-align:center;
-
-box-shadow:0 8px 18px rgba(0,0,0,.08);
-
-transition:.8s;
-
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:150px;
+    background:white;
+    border-radius:10px 10px 0 0;
+    padding:20px;
+    text-align:center;
 }
 
 .letter h1{
-
-font-size:30px;
-
-font-family:'Patrick Hand',cursive;
-
-color:#9747ff;
-
-margin-bottom:12px;
-
+    font-family:'Patrick Hand', cursive;
+    color:#6a1b9a;
+    font-size:30px;
 }
 
 .letter p{
-
-font-size:18px;
-
-margin-bottom:22px;
-
-color:#666;
-
+    margin:15px 0;
+    color:#555;
 }
 
 button{
-
-padding:14px 30px;
-
-border:none;
-
-background:#b46cff;
-
-color:white;
-
-border-radius:50px;
-
-font-size:18px;
-
-cursor:pointer;
-
-transition:.3s;
-
+    border:none;
+    padding:12px 30px;
+    border-radius:30px;
+    background:#8e44ad;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
 }
 
 button:hover{
-
-transform:scale(1.05);
-
-background:#a24eff;
-
-}
-
-/* OPEN */
-
-.envelope.open .top{
-
-transform:rotateX(180deg);
-
-}
-
-.envelope.open .letter{
-
-transform:translate(-50%,-120%);
-
+    transform:scale(1.1);
 }
