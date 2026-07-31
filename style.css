@@ -86,3 +86,20 @@ button{
 button:hover{
     transform:scale(1.1);
 }
+.envelope.open{
+    transform:translateY(-30px) scale(1.05);
+    box-shadow:0 0 70px rgba(255,100,200,0.8);
+}
+
+.envelope.open .envelope-top{
+    transform:rotateX(180deg);
+    transform-origin:top;
+}
+
+.envelope-top{
+    transition:0.8s;
+}
+
+.letter{
+    transition:0.8s;
+}
