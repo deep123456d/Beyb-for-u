@@ -1,1 +1,167 @@
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Patrick Hand',cursive;
+    min-height:100vh;
+    overflow:hidden;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:linear-gradient(135deg,#f6e7ff,#edd5ff,#fceeff);
+
+    position:relative;
+}
+
+/* Floating background */
+.background-hearts{
+    position:absolute;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+.background-hearts::before,
+.background-hearts::after{
+    content:"💜 💖 🌸 ✨ 💜";
+    position:absolute;
+    font-size:28px;
+    animation:float 18s linear infinite;
+    opacity:.25;
+}
+
+.background-hearts::after{
+    top:60%;
+    animation-duration:25s;
+}
+
+@keyframes float{
+
+    from{
+        transform:translateX(-100%);
+    }
+
+    to{
+        transform:translateX(120%);
+    }
+
+}
+
+.container{
+    z-index:10;
+    padding:20px;
+}
+
+.envelope{
+
+    width:340px;
+
+    background:white;
+
+    border-radius:28px;
+
+    padding:40px 25px;
+
+    text-align:center;
+
+    box-shadow:
+    0 15px 45px rgba(128,70,180,.18);
+
+    animation:pop 1s ease;
+}
+
+@keyframes pop{
+
+0%{
+transform:scale(.8);
+opacity:0;
+}
+
+100%{
+transform:scale(1);
+opacity:1;
+}
+
+}
+
+.heart{
+
+font-size:70px;
+
+margin-bottom:15px;
+
+animation:heartbeat 2s infinite;
+
+}
+
+@keyframes heartbeat{
+
+0%,100%{
+transform:scale(1);
+}
+
+50%{
+transform:scale(1.18);
+}
+
+}
+
+h1{
+
+font-size:34px;
+
+color:#7b3fc7;
+
+margin-bottom:10px;
+
+}
+
+p{
+
+font-size:22px;
+
+color:#555;
+
+margin-bottom:35px;
+
+}
+
+button{
+
+background:#b06cff;
+
+color:white;
+
+border:none;
+
+padding:16px 32px;
+
+font-size:22px;
+
+border-radius:100px;
+
+cursor:pointer;
+
+transition:.35s;
+
+font-family:'Patrick Hand',cursive;
+
+box-shadow:0 10px 20px rgba(176,108,255,.3);
+
+}
+
+button:hover{
+
+transform:scale(1.08);
+
+background:#9d55f4;
+
+}
