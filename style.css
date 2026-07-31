@@ -1,105 +1,56 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Poppins', sans-serif;
+.openBtn{
+    transition:0.5s;
 }
 
-body{
-    height:100vh;
-    overflow:hidden;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:#0b0014;
-}
-
-.background{
-    position:absolute;
-    width:100%;
-    height:100%;
-    background:
-    radial-gradient(circle at top, #5b1b8a, #0b0014 60%);
-    z-index:-1;
-}
-
-.container{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
 
 .envelope{
-    width:320px;
-    height:220px;
-    background:#8e44ad;
-    position:relative;
-    border-radius:15px;
-    box-shadow:0 0 40px rgba(255,0,150,0.4);
-    overflow:hidden;
-    transition:0.8s;
+    perspective:1000px;
+    transition:1s ease;
 }
+
 
 .envelope-top{
-    position:absolute;
-    width:0;
-    height:0;
-    border-left:160px solid transparent;
-    border-right:160px solid transparent;
-    border-top:110px solid #b56cff;
-    top:0;
-}
-
-.letter{
-    position:absolute;
-    bottom:0;
-    width:100%;
-    height:150px;
-    background:white;
-    border-radius:10px 10px 0 0;
-    padding:20px;
-    text-align:center;
-}
-
-.letter h1{
-    font-family:'Patrick Hand', cursive;
-    color:#6a1b9a;
-    font-size:30px;
-}
-
-.letter p{
-    margin:15px 0;
-    color:#555;
-}
-
-button{
-    border:none;
-    padding:12px 30px;
-    border-radius:30px;
-    background:#8e44ad;
-    color:white;
-    font-size:16px;
-    cursor:pointer;
-    transition:0.3s;
-}
-
-button:hover{
-    transform:scale(1.1);
-}
-.envelope.open{
-    transform:translateY(-30px) scale(1.05);
-    box-shadow:0 0 70px rgba(255,100,200,0.8);
-}
-
-.envelope.open .envelope-top{
-    transform:rotateX(180deg);
     transform-origin:top;
+    transition:1.2s cubic-bezier(.68,-0.55,.27,1.55);
+    z-index:3;
 }
 
-.envelope-top{
-    transition:0.8s;
-}
 
 .letter{
-    transition:0.8s;
+    transition:1s ease;
+    z-index:2;
+}
+
+
+.opening{
+    animation: glow 1.5s infinite alternate;
+}
+
+
+.opening .envelope-top{
+    transform:rotateX(180deg);
+}
+
+
+.opened{
+    transform:translateY(-40px);
+}
+
+
+.opened .letter{
+    transform:translateY(-80px);
+    box-shadow:0 0 50px rgba(255,255,255,0.5);
+}
+
+
+@keyframes glow{
+
+    from{
+        box-shadow:0 0 30px rgba(255,0,170,0.4);
+    }
+
+    to{
+        box-shadow:0 0 80px rgba(255,100,220,0.9);
+    }
+
 }
