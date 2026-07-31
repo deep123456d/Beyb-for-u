@@ -208,3 +208,27 @@ font-family:'Patrick Hand',cursive;
 box-shadow:0 8px 18px rgba(176,108,255,.35);
 
 }
+/* ===== Open Envelope Animation ===== */
+
+.envelope{
+    transition:0.8s ease;
+}
+
+.flap{
+    transform-origin:top;
+    transition:transform 0.8s ease;
+}
+
+.letter{
+    transition:all 0.8s ease;
+}
+
+/* When opened */
+
+.envelope.open .flap{
+    transform:rotateX(180deg);
+}
+
+.envelope.open .letter{
+    transform:translate(-50%,-115%);
+} 
