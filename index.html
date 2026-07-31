@@ -2,537 +2,252 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Happy Girlfriend's Day, beybbb 💕</title>
-  <style>
-    :root {
-      --bg-purple: #f3ebf9;
-      --card-bg: #ffffff;
-      --accent-purple: #b48ded;
-      --text-dark: #3a2e48;
-      --text-muted: #7f6e91;
-      --grid-line: rgba(180, 141, 237, 0.15);
-    }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+  <!-- Google Fonts for Aesthetic Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    body {
-      background-color: var(--bg-purple);
-      background-image: 
-        linear-gradient(var(--grid-line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-      background-size: 24px 24px;
-      color: var(--text-dark);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px 15px 80px 15px;
-    }
+  <!-- Canvas Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    .container {
-      width: 100%;
-      max-width: 420px;
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
-    }
-
-    /* Start Screen Overlay */
-    #start-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: var(--bg-purple);
-      background-image: 
-        linear-gradient(var(--grid-line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-      background-size: 24px 24px;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      text-align: center;
-    }
-
-    #start-overlay p {
-      margin-top: 20px;
-      font-size: 0.9rem;
-      letter-spacing: 2px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-    }
-
-    /* Section Tag Styling */
-    .badge {
-      align-self: center;
-      background: #ffffff;
-      border: 1px solid #e2d1f7;
-      padding: 4px 14px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      color: var(--accent-purple);
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-    }
-
-    /* Card Styling */
-    .card {
-      background: var(--card-bg);
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 8px 24px rgba(180, 141, 237, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      position: relative;
-    }
-
-    h1, h2 {
-      text-align: center;
-      font-weight: 700;
-      color: var(--text-dark);
-      margin-bottom: 12px;
-    }
-
-    /* Main Cover Section */
-    .cover-img {
-      width: 100%;
-      border-radius: 12px;
-      object-fit: cover;
-      margin-bottom: 15px;
-    }
-
-    .intro-text {
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      line-height: 1.5;
-    }
-
-    /* Audio Player */
-    .audio-player {
-      background: #fbf8fd;
-      border: 1px solid #efe4fa;
-      border-radius: 14px;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 15px;
-    }
-
-    .play-btn {
-      background: var(--accent-purple);
-      color: white;
-      border: none;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-    }
-
-    .song-info {
-      flex: 1;
-    }
-
-    .song-title {
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
-
-    .song-subtitle {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    /* Memory Flip Grid */
-    .grid-2x3 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 10px;
-    }
-
-    .flip-card {
-      background-color: transparent;
-      height: 150px;
-      perspective: 1000px;
-      cursor: pointer;
-    }
-
-    .flip-card-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-      transform-style: preserve-3d;
-    }
-
-    .flip-card.flipped .flip-card-inner {
-      transform: rotateY(180deg);
-    }
-
-    .flip-front, .flip-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-
-    .flip-front {
-      background-color: #ffffff;
-      border: 1px solid #ebdcfc;
-    }
-
-    .flip-front img {
-      max-width: 80%;
-      max-height: 80%;
-      object-fit: contain;
-    }
-
-    .flip-back {
-      background-color: #faf5ff;
-      border: 1px dashed var(--accent-purple);
-      color: var(--text-dark);
-      transform: rotateY(180deg);
-      font-size: 0.85rem;
-      font-style: italic;
-      line-height: 1.4;
-    }
-
-    /* Scratch Cards Grid */
-    .scratch-card {
-      position: relative;
-      height: 90px;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #f3ebf9;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 10px;
-      text-align: center;
-    }
-
-    .scratch-content h4 {
-      font-size: 0.8rem;
-      color: var(--accent-purple);
-    }
-
-    .scratch-content p {
-      font-size: 0.75rem;
-      color: var(--text-dark);
-    }
-
-    .scratch-canvas {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      cursor: pointer;
-      z-index: 2;
-    }
-
-    /* Note/Letter Section */
-    .letter-card {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 25px 20px;
-      line-height: 1.7;
-      font-size: 0.9rem;
-      color: var(--text-dark);
-      background-image: repeating-linear-gradient(#ffffff, #ffffff 27px, #e8ddf5 28px);
-    }
-
-    .letter-card p {
-      margin-bottom: 20px;
-    }
-
-    /* Floating Happy Happy Cat */
-    .happy-cat-container {
-      position: fixed;
-      bottom: 15px;
-      right: 15px;
-      z-index: 999;
-      pointer-events: none;
-    }
-
-    .happy-cat {
-      width: 80px;
-      height: auto;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
-    }
-
-    /* Cute Sticker Accents */
-    .sticker-flower {
-      width: 30px;
-      display: block;
-      margin: 10px auto 0 auto;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- TAP TO BEGIN OVERLAY -->
-  <div id="start-overlay" onclick="startExperience()">
-    <div style="font-size: 2rem;">😭 🫶</div>
-    <p>Tap anywhere to begin</p>
+  <!-- Floating Ambient Hearts Background -->
+  <div id="heart-container" aria-hidden="true"></div>
+
+  <!-- STEP 1: TAP TO BEGIN / ENVELOPE OPENING OVERLAY -->
+  <div id="start-overlay" class="overlay">
+    <div class="envelope-wrapper" id="envelope">
+      <div class="balloon-icon">🎈</div>
+      <div class="envelope">
+        <div class="envelope-flap"></div>
+        <div class="envelope-paper">
+          <p class="envelope-title">For beybbb 💖</p>
+        </div>
+        <div class="envelope-body"></div>
+      </div>
+      <div class="tap-badge">😭 🫶</div>
+      <p class="tap-text">TAP ANYWHERE TO BEGIN</p>
+    </div>
   </div>
 
-  <div class="container">
+  <!-- MAIN APP CONTAINER -->
+  <div class="main-container hidden" id="mainContent">
 
-    <!-- MAIN HEADER & COVER -->
-    <div class="card">
-      <div class="badge">✨ HAPPY GIRLFRIEND'S DAY</div>
-      <h1 style="margin-top: 10px;">To My Favourite Person</h1>
-      <div style="text-align:center; margin-bottom: 15px;">
-        <span style="background: #eadaf7; color: #8e5bd6; font-size: 0.75rem; padding: 3px 10px; border-radius: 12px;">to the best one ✿</span>
+    <!-- HERO SECTION -->
+    <header class="card hero-card fade-in">
+      <div class="badge">✦ HAPPY GIRLFRIEND'S DAY</div>
+      <h1 class="gradient-title">To My Favourite Person</h1>
+      <div class="sub-tag">to the best one ✿</div>
+
+      <div class="hero-image-container">
+        <!-- Cute Sticker Gif -->
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnZmbHRubnkxbXlsM3A3YTZ3cmxudnAzeGN5eG1jYmEwaGFxdnZydCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/MDJ9IbxxvDUQM/giphy.gif" alt="Hello Kitty Sticker" class="hero-gif" />
       </div>
 
-      <!-- Hello Kitty / Flower Hero Sticker -->
-      <img class="cover-img" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnZmbHRubnkxbXlsM3A3YTZ3cmxudnAzeGN5eG1jYmEwaGFxdnZydCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/MDJ9IbxxvDUQM/giphy.gif" alt="Cute Sticker">
-
-      <p class="intro-text">
-        Every year this day comes around and I think the same thing: I got so lucky with you, <b>beybbb</b>. So instead of just a text, I built you a tiny corner of the internet. Stay a while, there’s a bit to see.
+      <p class="intro-message">
+        Every year this day comes around and I think the same thing: I got so lucky with you, <strong>beybbb</strong>. So instead of a simple text, I built you a tiny corner of the internet. Stay a while, there’s a bit to see.
       </p>
 
-      <!-- AUDIO PLAYER -->
-      <div class="audio-player">
-        <button class="play-btn" id="playBtn" onclick="toggleAudio()">▶</button>
-        <div class="song-info">
-          <div class="song-title">Our Song</div>
-          <div class="song-subtitle">the one that's ours</div>
+      <!-- AUDIO PLAYER CARD -->
+      <div class="music-card">
+        <button class="play-btn" id="playBtn" onclick="toggleAudio()">
+          <span id="playIcon">▶</span>
+        </button>
+        <div class="song-details">
+          <div class="song-name">Our Song</div>
+          <div class="song-artist">the one that's ours 🌸</div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="audioProgress"></div>
+          </div>
         </div>
-        <span style="font-size: 0.75rem; color: var(--text-muted);">🌸</span>
       </div>
-      
-      <!-- Audio file link (Replace URL with your choice if needed) -->
-      <audio id="bgMusic" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
-    </div>
+      <audio id="bgMusic" loop src="assets/our-song.mp3"></audio>
+    </header>
 
-    <!-- MEMORY WALL (FLIP CARDS) -->
-    <div class="card">
-      <div class="badge">🌸 THE MEMORY WALL</div>
+    <!-- SECTION 1: THE MEMORY WALL (FLIP CARDS) -->
+    <section class="card section-card fade-in">
+      <div class="badge">✦ THE MEMORY WALL</div>
       <h2>Flip one over</h2>
-      <p style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">every photo has something written on the back ✿</p>
+      <p class="section-subtext">every photo has something written on the back ✿</p>
 
-      <div class="grid-2x3">
+      <div class="memory-grid">
         <!-- Card 1 -->
-        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-card" onclick="flipCard(this)">
           <div class="flip-card-inner">
             <div class="flip-front">
-              <img src="https://api.iconify.design/fluent-emoji:cat-face.svg" alt="sticker" />
+              <img src="assets/photo1.jpg" alt="Memory 1" onerror="this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400&auto=format&fit=crop&q=60'" />
             </div>
-            <div class="flip-back">day one energy, we had no idea what was coming.</div>
+            <div class="flip-back">
+              <p>Day one energy, we had no idea what was coming.</p>
+            </div>
           </div>
         </div>
+
         <!-- Card 2 -->
-        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-card" onclick="flipCard(this)">
           <div class="flip-card-inner">
             <div class="flip-front">
-              <img src="https://api.iconify.design/fluent-emoji:bouquet.svg" alt="sticker" />
+              <img src="assets/photo2.jpg" alt="Memory 2" onerror="this.src='https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=400&auto=format&fit=crop&q=60'" />
             </div>
-            <div class="flip-back">still one of the funniest nights of my life.</div>
+            <div class="flip-back">
+              <p>Still one of the funniest nights of my life.</p>
+            </div>
           </div>
         </div>
+
         <!-- Card 3 -->
-        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-card" onclick="flipCard(this)">
           <div class="flip-card-inner">
             <div class="flip-front">
-              <img src="https://api.iconify.design/fluent-emoji:tulip.svg" alt="sticker" />
+              <img src="assets/photo3.jpg" alt="Memory 3" onerror="this.src='https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&auto=format&fit=crop&q=60'" />
             </div>
-            <div class="flip-back">nothing happened this day, that was the best part.</div>
+            <div class="flip-back">
+              <p>Nothing happened this day, that was the best part.</p>
+            </div>
           </div>
         </div>
+
         <!-- Card 4 -->
-        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-card" onclick="flipCard(this)">
           <div class="flip-card-inner">
             <div class="flip-front">
-              <img src="https://api.iconify.design/fluent-emoji:frog.svg" alt="sticker" />
+              <img src="assets/photo4.jpg" alt="Memory 4" onerror="this.src='https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&auto=format&fit=crop&q=60'" />
             </div>
-            <div class="flip-back">the trip we planned badly and loved anyway.</div>
+            <div class="flip-back">
+              <p>The trip we planned badly and loved anyway.</p>
+            </div>
           </div>
         </div>
+
         <!-- Card 5 -->
-        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-card" onclick="flipCard(this)">
           <div class="flip-card-inner">
             <div class="flip-front">
-              <img src="https://api.iconify.design/fluent-emoji:hibiscus.svg" alt="sticker" />
+              <img src="assets/photo5.jpg" alt="Memory 5" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=60'" />
             </div>
-            <div class="flip-back">3am, terrible snacks, best conversation.</div>
+            <div class="flip-back">
+              <p>3am, terrible snacks, best conversation.</p>
+            </div>
           </div>
         </div>
+
         <!-- Card 6 -->
-        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-card" onclick="flipCard(this)">
           <div class="flip-card-inner">
             <div class="flip-front">
-              <img src="https://api.iconify.design/fluent-emoji:sparkles.svg" alt="sticker" />
+              <img src="assets/photo6.jpg" alt="Memory 6" onerror="this.src='https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=60'" />
             </div>
-            <div class="flip-back">proof we clean up alright when we try.</div>
+            <div class="flip-back">
+              <p>Proof we clean up alright when we try.</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- SCRATCH CARDS SECTION -->
-    <div class="card">
-      <div class="badge">✨ SIX LITTLE TRUTHS</div>
+    <!-- SECTION 2: SIX LITTLE TRUTHS (SCRATCH CARDS) -->
+    <section class="card section-card fade-in">
+      <div class="badge">✦ SIX LITTLE TRUTHS</div>
       <h2>Scratch these open</h2>
-      <p style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">rub each one — there’s something under it ✿</p>
+      <p class="section-subtext">rub each one — there’s something under it ✿</p>
 
-      <div class="grid-2x3">
+      <div class="scratch-grid">
         <!-- Scratch 1 -->
         <div class="scratch-card">
           <div class="scratch-content">
-            <h4>01. you show up</h4>
-            <p>you notice when something is off before I say a word.</p>
+            <span class="scratch-number">01</span>
+            <h4>you show up</h4>
+            <p>you notice something's off before I've said a word. that's the whole thing.</p>
           </div>
           <canvas class="scratch-canvas"></canvas>
         </div>
+
         <!-- Scratch 2 -->
         <div class="scratch-card">
           <div class="scratch-content">
-            <h4>02. you're funny</h4>
-            <p>half my best memories are us laughing until it hurts.</p>
+            <span class="scratch-number">02</span>
+            <h4>you're funny</h4>
+            <p>half my best memories are us doing nothing and laughing until it hurts.</p>
           </div>
           <canvas class="scratch-canvas"></canvas>
         </div>
+
         <!-- Scratch 3 -->
         <div class="scratch-card">
           <div class="scratch-content">
-            <h4>03. you're stuck</h4>
-            <p>no exit option, sorry. you're mine forever! 💗</p>
+            <span class="scratch-number">03</span>
+            <h4>you're stuck</h4>
+            <p>years in and you still pick up on the first ring. no exit option. sorry.</p>
           </div>
           <canvas class="scratch-canvas"></canvas>
         </div>
+
         <!-- Scratch 4 -->
         <div class="scratch-card">
           <div class="scratch-content">
-            <h4>04. my safe place</h4>
-            <p>wherever you are is home to me.</p>
+            <span class="scratch-number">04</span>
+            <h4>safe space</h4>
+            <p>wherever you are is automatically home to me, beybbb.</p>
           </div>
           <canvas class="scratch-canvas"></canvas>
         </div>
+
         <!-- Scratch 5 -->
         <div class="scratch-card">
           <div class="scratch-content">
-            <h4>05. best listener</h4>
-            <p>thanks for hearing out all my rants.</p>
+            <span class="scratch-number">05</span>
+            <h4>best listener</h4>
+            <p>thanks for being my designated rant receiver 24/7.</p>
           </div>
           <canvas class="scratch-canvas"></canvas>
         </div>
+
         <!-- Scratch 6 -->
         <div class="scratch-card">
           <div class="scratch-content">
-            <h4>06. I love you</h4>
-            <p>more than words could ever describe.</p>
+            <span class="scratch-number">06</span>
+            <h4>I love you</h4>
+            <p>mostest, always, without question.</p>
           </div>
           <canvas class="scratch-canvas"></canvas>
         </div>
       </div>
-    </div>
 
-    <!-- FINAL LETTER SECTION -->
-    <div class="card">
-      <div class="badge">✿ ONE LAST THING</div>
-      <h2 style="margin-top: 10px;">A Note For You</h2>
-      
-      <div class="letter-card">
-        <p><b>Hey beybbb,</b></p>
-        <p>I’m not great at saying this stuff out loud, so I made you a page instead — a song, our memories, and a few things I actually mean.</p>
-        <p>Thank you for the years of picking up the phone, for the advice I didn’t ask for but definitely needed, and for never once making me explain myself twice. You’ve seen every version of me and stayed for all of them.</p>
-        <p>I hope today is a good one. And I hope you know that whatever happens next, you’ve got a person in your corner permanently. That’s me. I’m the person.</p>
-        <p style="text-align: right; margin-top: 20px;">Always in your corner,<br><b>Yours ❤️</b></p>
+      <div class="scratch-counter">
+        <span id="uncoveredCount">0</span> of 6 uncovered
       </div>
-    </div>
+    </section>
+
+    <!-- SECTION 3: THE LETTER -->
+    <section class="card letter-card fade-in">
+      <div class="badge">✦ ONE LAST THING</div>
+      <h2 style="margin-top: 10px;">A Note For You</h2>
+
+      <div class="notebook-paper">
+        <p class="letter-salutation">Hey beybbb,</p>
+        <p>I’m not great at saying this stuff out loud, so I made you a page instead — a song, our photos, and a few things I actually mean.</p>
+        <p>Thank you for the years of picking up the phone, for the advice I didn’t ask for and definitely needed, and for never once making me explain myself twice. You’ve seen every version of me and stayed for all of them.</p>
+        <p>I hope today is a good one. And I hope you know that whatever happens next, you’ve got a person in your corner permanently. That’s me. I’m the person.</p>
+        <div class="letter-closing">
+          <span>always in your corner,</span>
+          <p class="handwriting">yours ❤️</p>
+        </div>
+      </div>
+    </section>
 
   </div>
 
   <!-- FLOATING HAPPY HAPPY CAT MEME GIF -->
-  <div class="happy-cat-container">
-    <img class="happy-cat" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Z2N3J3eHF5dW9xbHV2ZDV6eXpsYXlyOHp3YXRmb3R4bm9yd3FmOSZlcD12MV_pbnRlcm5hbF_naWZfYnlfaWQmY3Q9cw/GeimqsH0TLDt4tScGw/giphy.gif" alt="Happy Happy Cat">
+  <div class="floating-cat-wrapper" id="happyCat">
+    <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Z2N3J3eHF5dW9xbHV2ZDV6eXpsYXlyOHp3YXRmb3R4bm9yd3FmOSZlcD12MV_pbnRlcm5hbF_naWZfYnlfaWQmY3Q9cw/GeimqsH0TLDt4tScGw/giphy.gif" alt="Happy Happy Cat" class="happy-cat-gif" />
   </div>
 
-  <script>
-    // Audio Control
-    const audio = document.getElementById('bgMusic');
-    const playBtn = document.getElementById('playBtn');
-
-    function startExperience() {
-      document.getElementById('start-overlay').style.display = 'none';
-      audio.play().catch(() => {});
-      playBtn.textContent = '❚❚';
-    }
-
-    function toggleAudio() {
-      if (audio.paused) {
-        audio.play();
-        playBtn.textContent = '❚❚';
-      } else {
-        audio.pause();
-        playBtn.textContent = '▶';
-      }
-    }
-
-    // Scratch Card Logic
-    document.querySelectorAll('.scratch-card').forEach(card => {
-      const canvas = card.querySelector('.scratch-canvas');
-      const ctx = canvas.getContext('2d');
-      
-      canvas.width = card.offsetWidth;
-      canvas.height = card.offsetHeight;
-
-      // Fill with lavender cover
-      ctx.fillStyle = '#d8c2f5';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Text on scratch surface
-      ctx.fillStyle = '#8363b3';
-      ctx.font = 'bold 12px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('scratch here ✨', canvas.width / 2, canvas.height / 2 + 4);
-
-      let isScratching = false;
-
-      function scratch(e) {
-        if (!isScratching) return;
-        const rect = canvas.getBoundingClientRect();
-        const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-        const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.beginPath();
-        ctx.arc(x, y, 16, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      canvas.addEventListener('mousedown', () => isScratching = true);
-      canvas.addEventListener('mouseup', () => isScratching = false);
-      canvas.addEventListener('mousemove', scratch);
-
-      canvas.addEventListener('touchstart', () => isScratching = true);
-      canvas.addEventListener('touchend', () => isScratching = false);
-      canvas.addEventListener('touchmove', scratch);
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
