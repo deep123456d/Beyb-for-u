@@ -1,21 +1,25 @@
 const openBtn = document.getElementById("openBtn");
 const envelope = document.getElementById("envelope");
+const letter = document.querySelector(".letter");
 
 openBtn.addEventListener("click", () => {
 
-    envelope.classList.add("open");
+    openBtn.style.opacity = "0";
+    openBtn.style.pointerEvents = "none";
+
+    envelope.classList.add("opening");
 
     setTimeout(() => {
-        document.querySelector(".letter").innerHTML = `
 
-        <h1>Hey You ❤️</h1>
-
-        <p>
-        I made something special for you...
-        </p>
-
+        letter.innerHTML = `
+            <h1>Hey You ❤️</h1>
+            <p>
+            I made this little world just for you...
+            </p>
         `;
 
-    },800);
+        envelope.classList.add("opened");
+
+    }, 1200);
 
 });
