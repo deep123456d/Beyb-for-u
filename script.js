@@ -1,7 +1,5 @@
-const btn = document.getElementById("openBtn");
+const envelope = document.getElementById("envelope");
 
-btn.addEventListener("click",()=>{
-
-    alert("The envelope animation is coming in the next step 😭💜");
-
+envelope.addEventListener("click", () => {
+    envelope.classList.toggle("open");
 });
