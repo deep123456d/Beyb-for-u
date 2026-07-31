@@ -1,5 +1,4 @@
-/* Google Font */
-@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Quicksand:wght@400;700&display=swap');
 
 *{
     margin:0;
@@ -8,160 +7,204 @@
 }
 
 body{
-    font-family:'Patrick Hand',cursive;
+    width:100%;
     min-height:100vh;
-    overflow:hidden;
-
     display:flex;
     justify-content:center;
     align-items:center;
-
-    background:linear-gradient(135deg,#f6e7ff,#edd5ff,#fceeff);
-
-    position:relative;
-}
-
-/* Floating background */
-.background-hearts{
-    position:absolute;
-    width:100%;
-    height:100%;
     overflow:hidden;
+    font-family:'Quicksand',sans-serif;
+
+    background:linear-gradient(
+        135deg,
+        #fdf2ff,
+        #f3d9ff,
+        #e8d0ff
+    );
 }
 
-.background-hearts::before,
-.background-hearts::after{
-    content:"💜 💖 🌸 ✨ 💜";
-    position:absolute;
-    font-size:28px;
-    animation:float 18s linear infinite;
-    opacity:.25;
+/* Floating hearts */
+
+.floating-hearts{
+
+position:absolute;
+width:100%;
+height:100%;
+overflow:hidden;
+
 }
 
-.background-hearts::after{
-    top:60%;
-    animation-duration:25s;
+.floating-hearts::before{
+
+content:"💜 💗 ✨ 🌸 💜 💖";
+
+position:absolute;
+
+font-size:28px;
+
+left:-20%;
+
+top:20%;
+
+opacity:.35;
+
+animation:float 22s linear infinite;
+
 }
 
 @keyframes float{
 
-    from{
-        transform:translateX(-100%);
-    }
+from{
 
-    to{
-        transform:translateX(120%);
-    }
+transform:translateX(-20%);
 
 }
 
-.container{
-    z-index:10;
-    padding:20px;
+to{
+
+transform:translateX(140%);
+
+}
+
+}
+
+.wrapper{
+
+width:100%;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+padding:20px;
+
+}
+
+/* Envelope */
+
+.envelope-container{
+
+perspective:1200px;
+
 }
 
 .envelope{
 
-    width:340px;
+position:relative;
 
-    background:white;
+width:330px;
 
-    border-radius:28px;
+height:220px;
 
-    padding:40px 25px;
+background:#f7d6ff;
 
-    text-align:center;
+border-radius:12px;
 
-    box-shadow:
-    0 15px 45px rgba(128,70,180,.18);
+box-shadow:
+0 25px 60px rgba(0,0,0,.15);
 
-    animation:pop 1s ease;
-}
+cursor:pointer;
 
-@keyframes pop{
+transition:.5s;
 
-0%{
-transform:scale(.8);
-opacity:0;
-}
-
-100%{
-transform:scale(1);
-opacity:1;
-}
+overflow:hidden;
 
 }
 
-.heart{
+.envelope:hover{
 
-font-size:70px;
-
-margin-bottom:15px;
-
-animation:heartbeat 2s infinite;
+transform:translateY(-6px);
 
 }
 
-@keyframes heartbeat{
+.flap{
 
-0%,100%{
-transform:scale(1);
+position:absolute;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:120px;
+
+background:#d998ff;
+
+clip-path:polygon(0 0,100% 0,50% 100%);
+
+z-index:5;
+
+transition:.8s;
+
 }
 
-50%{
-transform:scale(1.18);
-}
+.letter{
+
+position:absolute;
+
+left:50%;
+
+top:55%;
+
+transform:translate(-50%,-50%);
+
+width:88%;
+
+background:white;
+
+border-radius:10px;
+
+padding:22px;
+
+text-align:center;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+z-index:2;
 
 }
 
-h1{
+.letter h2{
 
-font-size:34px;
+color:#9146ff;
 
-color:#7b3fc7;
+font-size:30px;
 
-margin-bottom:10px;
+margin-bottom:12px;
+
+font-family:'Patrick Hand',cursive;
 
 }
 
-p{
+.letter p{
 
-font-size:22px;
+font-size:19px;
 
 color:#555;
 
-margin-bottom:35px;
+margin-bottom:20px;
 
 }
 
-button{
+.tap{
+
+display:inline-block;
+
+padding:10px 20px;
 
 background:#b06cff;
 
 color:white;
 
-border:none;
+border-radius:30px;
 
-padding:16px 32px;
-
-font-size:22px;
-
-border-radius:100px;
-
-cursor:pointer;
-
-transition:.35s;
+font-size:18px;
 
 font-family:'Patrick Hand',cursive;
 
-box-shadow:0 10px 20px rgba(176,108,255,.3);
-
-}
-
-button:hover{
-
-transform:scale(1.08);
-
-background:#9d55f4;
+box-shadow:0 8px 18px rgba(176,108,255,.35);
 
 }
