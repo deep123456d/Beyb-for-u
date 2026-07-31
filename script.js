@@ -1,20 +1,21 @@
+const openBtn = document.getElementById("openBtn");
 const envelope = document.getElementById("envelope");
-const button = document.getElementById("openBtn");
 
-button.addEventListener("click", function(e){
+openBtn.addEventListener("click", () => {
 
-    e.stopPropagation();
+    envelope.classList.add("open");
 
-    envelope.classList.toggle("open");
+    setTimeout(() => {
+        document.querySelector(".letter").innerHTML = `
 
-    if(button.innerText==="Open My Surprise 💌"){
+        <h1>Hey You ❤️</h1>
 
-        button.innerText="Close Envelope 💜";
+        <p>
+        I made something special for you...
+        </p>
 
-    }else{
+        `;
 
-        button.innerText="Open My Surprise 💌";
-
-    }
+    },800);
 
 });
