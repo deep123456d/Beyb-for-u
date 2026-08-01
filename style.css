@@ -1,0 +1,407 @@
+:root {
+    --bg-grid-color: #FAF6FF;
+    --grid-line-color: rgba(215, 195, 245, 0.35);
+    --purple-main: #9161E0;
+    --purple-light: #CBB2F8;
+    --purple-card-bg: #D9C2FF;
+    --text-dark: #3A2E56;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--bg-grid-color);
+    background-image: 
+        linear-gradient(var(--grid-line-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line-color) 1px, transparent 1px);
+    background-size: 24px 24px;
+    font-family: 'Nunito', sans-serif;
+    color: var(--text-dark);
+}
+
+.app-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+
+#particleCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 999;
+}
+
+.floating-music-btn {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1.5px solid var(--purple-main);
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(145, 97, 224, 0.2);
+}
+
+.toast-popup {
+    position: fixed;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #FF4757;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    z-index: 2000;
+    box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    white-space: nowrap;
+}
+
+.toast-popup.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(-20px);
+}
+
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.screen.active { opacity: 1; visibility: visible; }
+.screen.hidden { display: none; }
+
+/* LOADING SCREEN */
+#loadingScreen { background: #120A21; color: #fff; }
+.loader-content { text-align: center; }
+.beating-heart { font-size: 4rem; animation: heartbeat 1.2s infinite ease-in-out; }
+.loading-text { font-size: 1.2rem; margin: 15px 0 8px; color: #E6D6FF; }
+.sub-loader { font-size: 0.8rem; opacity: 0.6; }
+
+@keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+/* WELCOME & DELIVERY SCREEN */
+.main-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: #6C4FB2;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+.delivery-stage {
+    position: relative;
+    width: 300px;
+    height: 320px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 🎈 Hot Air Balloon Design (Matching Screenshot 1) */
+.balloon-group {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 5;
+}
+
+.balloon-top {
+    width: 150px;
+    height: 180px;
+    border-radius: 50% 50% 45% 45%;
+    background: #A673EE;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(145, 97, 224, 0.25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.stripe {
+    position: absolute;
+    height: 100%;
+    width: 20%;
+    top: 0;
+}
+.stripe.s1 { left: 0; background: #915BD9; }
+.stripe.s2 { left: 20%; background: #FF9ebb; }
+.stripe.s3 { left: 40%; background: #8242CE; }
+.stripe.s4 { left: 60%; background: #FF9ebb; }
+.stripe.s5 { left: 80%; background: #915BD9; }
+
+.balloon-emojis {
+    position: relative;
+    z-index: 2;
+    font-size: 1.6rem;
+    background: rgba(255, 255, 255, 0.25);
+    padding: 2px 10px;
+    border-radius: 15px;
+    backdrop-filter: blur(2px);
+}
+
+.basket-ropes {
+    width: 40px;
+    height: 25px;
+    border-left: 2px solid #8242CE;
+    border-right: 2px solid #8242CE;
+}
+
+.balloon-basket {
+    width: 50px;
+    height: 40px;
+    background: #FFFFFF;
+    border: 2px solid #8242CE;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.basket-letter-preview { font-size: 1.2rem; }
+
+/* 💌 Custom Lavender Envelope (Matching Screenshot 2) */
+.custom-envelope {
+    position: absolute;
+    width: 270px;
+    height: 170px;
+    background: #D5BEFF;
+    border: 2px solid #9161E0;
+    border-radius: 12px;
+    opacity: 0;
+    transform: scale(0.3);
+    transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.6s ease;
+    z-index: 2;
+    box-shadow: 0 15px 35px rgba(110, 60, 180, 0.2);
+}
+
+.env-top-flap {
+    position: absolute;
+    top: 0; left: 0;
+    border-left: 133px solid transparent;
+    border-right: 133px solid transparent;
+    border-top: 90px solid #C4A3FF;
+    transform-origin: top;
+    transition: transform 0.8s ease;
+    z-index: 4;
+}
+
+.env-front-pocket {
+    position: absolute;
+    bottom: 0; left: 0;
+    border-left: 133px solid #C9A9FF;
+    border-right: 133px solid #C9A9FF;
+    border-top: 80px solid transparent;
+    border-bottom: 85px solid #BC93FF;
+    border-radius: 0 0 10px 10px;
+    z-index: 3;
+}
+
+.env-stamp {
+    position: absolute;
+    bottom: 45px;
+    left: 20px;
+    border: 1.5px dashed #8242CE;
+    padding: 3px 8px;
+    font-size: 0.55rem;
+    font-weight: bold;
+    color: #6C4FB2;
+    letter-spacing: 1px;
+    transform: rotate(-5deg);
+    z-index: 5;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.env-heart-seal {
+    position: absolute;
+    top: 75px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 32px;
+    background: #FFFFFF;
+    border: 2px solid #8242CE;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    z-index: 6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Paper Letter Inside Envelope */
+.env-letter {
+    position: absolute;
+    top: 10px; left: 15px;
+    width: 236px; height: 145px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 2;
+}
+
+.letter-heading { font-family: 'Caveat', cursive; font-size: 1.8rem; color: #3A2E56; }
+.letter-sub1, .letter-sub2 { font-family: 'Caveat', cursive; font-size: 1.2rem; color: #666; margin-top: -2px; }
+.letter-tag { font-size: 0.75rem; color: #8242CE; font-weight: bold; margin-top: 8px; }
+.letter-emojis { font-size: 1.3rem; margin-top: 2px; }
+.letter-heart-top { position: absolute; top: 10px; font-size: 0.7rem; }
+.letter-heart-top.left { left: 12px; }
+.letter-heart-top.right { right: 12px; }
+
+/* Delivery Animation Triggers */
+.delivery-stage.animating .balloon-group {
+    transform: translateY(-450px);
+}
+
+.delivery-stage.animating .custom-envelope {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.delivery-stage.open .env-top-flap {
+    transform: rotateX(180deg);
+}
+
+.delivery-stage.open .env-letter {
+    transform: translateY(-100px);
+}
+
+.delivery-text { font-family: 'Caveat', cursive; font-size: 1.4rem; color: #7A6899; margin-top: 15px; }
+.glowing-btn { margin-top: 10px; background: transparent; border: none; font-size: 0.85rem; letter-spacing: 2px; color: #7A6899; font-weight: 700; cursor: pointer; }
+
+/* LEVEL SYSTEM CARDS */
+#notebookScreen { display: flex; justify-content: center; align-items: center; }
+.level-container { width: 90%; max-width: 360px; height: 85vh; position: relative; }
+
+.level-card {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 8px 25px rgba(160, 130, 210, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(30px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    overflow-y: auto;
+}
+
+.level-card.active-level {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+}
+
+.tape { width: 50px; height: 16px; background: rgba(224, 195, 252, 0.6); position: absolute; }
+.tape.top-left { top: -8px; left: 15px; transform: rotate(-10deg); }
+.tape.top-right { top: -8px; right: 15px; transform: rotate(10deg); }
+
+.badge-tag { font-size: 0.7rem; color: #9C72EF; font-weight: bold; }
+.pill-badge { background: #9C72EF; color: white; font-size: 0.7rem; padding: 4px 10px; border-radius: 12px; display: inline-block; }
+
+.card-border-box { border: 1.5px dashed #D6C7E8; padding: 15px; border-radius: 12px; width: 100%; }
+.card-border-box h3 { font-size: 1.2rem; color: #5A3E85; }
+.handwritten-title { font-family: 'Caveat', cursive; font-size: 1.5rem; color: #7A42B8; margin: 10px 0; }
+.warning { font-size: 0.75rem; color: #888; }
+
+.handwritten-content { font-family: 'Caveat', cursive; font-size: 1.6rem; color: #4A3366; margin: auto 0; }
+.corner-note { font-size: 0.75rem; color: #999; }
+
+.next-level-btn {
+    background: var(--purple-main);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.next-level-btn.locked { background: #CCC; }
+
+/* Meme Slider */
+.meme-slider { width: 100%; height: 150px; position: relative; margin: 10px 0; }
+.meme-slide { position: absolute; width: 100%; height: 100%; opacity: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.3s; }
+.meme-slide.active-slide { opacity: 1; }
+.meme-box { width: 100%; height: 110px; background: #F3ECFE; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+.slider-controls button { background: #F3ECFE; border: none; padding: 5px 15px; border-radius: 12px; color: #7A42B8; font-weight: bold; }
+
+/* Cat Container */
+.cat-container { font-size: 4rem; margin: 15px 0; cursor: pointer; }
+.achievement { background: #FFF8E7; padding: 10px; border-radius: 8px; font-size: 0.85rem; color: #8A6D0B; font-weight: bold; }
+
+/* Big Flip Cards */
+.cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; margin: 10px 0; }
+.flip-card { height: 130px; perspective: 600px; cursor: pointer; }
+.flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+.flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+.flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 8px; font-size: 0.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+.flip-card-front { background-size: cover; background-position: center; color: white; font-weight: bold; text-shadow: 0 1px 4px #000; border: 2px solid #FFF; }
+.flip-card-back { background: #FFF9E6; color: #4A3366; transform: rotateY(180deg); font-weight: bold; text-align: center; }
+
+/* Big Scratch Cards */
+.scratch-container { display: flex; flex-direction: column; gap: 12px; width: 100%; align-items: center; margin: 10px 0; }
+.scratch-card { position: relative; width: 260px; height: 70px; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+.scratch-reveal { position: absolute; width: 100%; height: 100%; background: #F3ECFE; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; color: #7A42B8; }
+.scratch-canvas { position: absolute; top: 0; left: 0; cursor: pointer; }
+
+/* Typewriter & Hold Button */
+.typewriter-container { font-family: 'Caveat', cursive; font-size: 1.4rem; text-align: left; line-height: 1.4; color: #333; margin: 15px 0; }
+.hold-heart-btn { background: #FF4757; color: white; border: none; padding: 12px 24px; border-radius: 25px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4); cursor: pointer; }
+
+/* Ending Cinematic */
+#endingScreen { background: #05020A; color: #fff; }
+.stars-bg { position: absolute; width: 100%; height: 100%; background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%); }
+.ending-content { z-index: 2; text-align: center; padding: 20px; }
+.glowing-purple-heart { font-size: 4.5rem; margin-bottom: 15px; }
+.ending-text-flow { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: #E6D6FF; min-height: 60px; }
+.final-close-note .hug-title { font-size: 1.3rem; color: #FFD9E8; font-weight: bold; }
+.peace-box { font-family: 'Caveat', cursive; font-size: 1.4rem; color: #D4AF37; margin-top: 10px; }
+
