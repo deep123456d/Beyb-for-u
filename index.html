@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Only For Herrr 💗✨</title>
+    <!-- Fonts & Libraries -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --bg-grid-color: #FAF6FF;
+            --grid-line-color: rgba(215, 195, 245, 0.35);
+            --purple-main: #9161E0;
+            --text-dark: #3A2E56;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: var(--bg-grid-color);
+            background-image: 
+                linear-gradient(var(--grid-line-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line-color) 1px, transparent 1px);
+            background-size: 24px 24px;
+            font-family: 'Nunito', sans-serif;
+            color: var(--text-dark);
+        }
+
+        .app-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #particleCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .floating-music-btn {
+            position: fixed;
+            top: 15px; right: 15px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1.5px solid var(--purple-main);
+            border-radius: 50%;
+            width: 42px; height: 42px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(145, 97, 224, 0.2);
+        }
+
+        .toast-popup {
+            position: fixed;
+            top: 25px; left: 50%;
+            transform: translateX(-50%);
+            background: #FF4757;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            z-index: 2000;
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .toast-popup.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-50%) translateY(-20px);
+        }
+
+        .screen {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            padding: 15px;
+        }
+
+        .screen.active { opacity: 1; visibility: visible; }
+        .screen.hidden { display: none; }
+
+        /* LOADING SCREEN */
+        #loadingScreen { background: #120A21; color: #fff; }
+        .loader-content { text-align: center; }
+        .beating-heart { font-size: 4rem; animation: heartbeat 1.2s infinite ease-in-out; }
+        .loading-text { font-size: 1.2rem; margin: 15px 0 8px; color: #E6D6FF; }
+        .sub-loader { font-size: 0.8rem; opacity: 0.6; }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+        /* WELCOME DELIVERY SCREEN */
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            color: #6C4FB2;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .delivery-stage {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* SVG Hot Air Balloon */
+        .balloon-svg-group {
+            position: absolute;
+            width: 180px;
+            height: 240px;
+            transition: transform 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 5;
+        }
+
+        /* Custom Lavender Envelope */
+        .envelope-box {
+            position: absolute;
+            width: 260px;
+            height: 160px;
+            background: #D5BEFF;
+            border: 2px solid #9161E0;
+            border-radius: 12px;
+            opacity: 0;
+            transform: scale(0.3);
+            transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.6s ease;
+            z-index: 2;
+            box-shadow: 0 15px 35px rgba(110, 60, 180, 0.2);
+            perspective: 800px;
+        }
+
+        .env-flap {
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 0;
+            border-left: 128px solid transparent;
+            border-right: 128px solid transparent;
+            border-top: 85px solid #C4A3FF;
+            transform-origin: top center;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 4;
+        }
+
+        .env-pocket {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 0; height: 0;
+            border-left: 128px solid #C9A9FF;
+            border-right: 128px solid #C9A9FF;
+            border-top: 75px solid transparent;
+            border-bottom: 80px solid #BC93FF;
+            border-radius: 0 0 10px 10px;
+            z-index: 3;
+        }
+
+        .env-letter {
+            position: absolute;
+            top: 8px; left: 12px;
+            width: 232px; height: 140px;
+            background: #FFFFFF;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 2;
+        }
+
+        .letter-heading { font-family: 'Caveat', cursive; font-size: 1.6rem; color: #3A2E56; }
+        .letter-sub { font-family: 'Caveat', cursive; font-size: 1.1rem; color: #666; }
+        .letter-tag { font-size: 0.75rem; color: #8242CE; font-weight: bold; margin-top: 5px; }
+
+        .env-heart-seal {
+            position: absolute;
+            top: 70px; left: 50%;
+            transform: translateX(-50%);
+            width: 32px; height: 32px;
+            background: #FFFFFF;
+            border: 2px solid #8242CE;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 6;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Animation Trigger States */
+        .delivery-stage.animating .balloon-svg-group { transform: translateY(-450px); }
+        .delivery-stage.animating .envelope-box { opacity: 1; transform: scale(1); }
+        .delivery-stage.open .env-flap { transform: rotateX(180deg); z-index: 1; }
+        .delivery-stage.open .env-heart-seal { opacity: 0; }
+        .delivery-stage.open .env-letter { transform: translateY(-110px); z-index: 5; }
+
+        .delivery-text { font-family: 'Caveat', cursive; font-size: 1.3rem; color: #7A6899; margin-top: 10px; }
+        .glowing-btn { margin-top: 10px; background: transparent; border: none; font-size: 0.85rem; letter-spacing: 2px; color: #7A6899; font-weight: 700; cursor: pointer; }
+
+        /* LEVEL CARD SYSTEM FIXED HEIGHT */
+        #notebookScreen { display: flex; justify-content: center; align-items: center; }
+        .level-container { width: 90%; max-width: 350px; height: 72vh; position: relative; }
+
+        .level-card {
+            position: absolute;
+            width: 100%; height: 100%;
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 8px 25px rgba(160, 130, 210, 0.15);
+            display: flex; flex-direction: column;
+            justify-content: space-between; align-items: center;
+            text-align: center;
+            opacity: 0; pointer-events: none;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .level-card.active-level { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+        .tape { width: 50px; height: 16px; background: rgba(224, 195, 252, 0.6); position: absolute; }
+        .tape.top-left { top: -8px; left: 15px; transform: rotate(-10deg); }
+        .tape.top-right { top: -8px; right: 15px; transform: rotate(10deg); }
+
+        .badge-tag { font-size: 0.7rem; color: #9C72EF; font-weight: bold; }
+        .pill-badge { background: #9C72EF; color: white; font-size: 0.7rem; padding: 4px 10px; border-radius: 12px; display: inline-block; margin-bottom: 8px; }
+        .card-border-box { border: 1.5px dashed #D6C7E8; padding: 10px; border-radius: 12px; width: 100%; margin-bottom: 5px; }
+        .card-border-box h3 { font-size: 1.1rem; color: #5A3E85; }
+        .handwritten-title { font-family: 'Caveat', cursive; font-size: 1.4rem; color: #7A42B8; margin: 6px 0; }
+        .warning { font-size: 0.75rem; color: #888; }
+        .handwritten-content { font-family: 'Caveat', cursive; font-size: 1.5rem; color: #4A3366; margin: auto 0; }
+
+        .next-level-btn {
+            background: var(--purple-main);
+            color: white; border: none;
+            padding: 10px 22px; border-radius: 20px;
+            font-weight: bold; font-size: 0.85rem;
+            cursor: pointer;
+            margin-top: 10px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(145, 97, 224, 0.3);
+        }
+        .next-level-btn.locked { background: #CCC; box-shadow: none; }
+
+        /* Meme Slider */
+        .meme-slider { width: 100%; height: 130px; position: relative; margin: 10px 0; }
+        .meme-slide { position: absolute; width: 100%; height: 100%; opacity: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.3s; }
+        .meme-slide.active-slide { opacity: 1; }
+        .meme-box { width: 100%; height: 95px; background: #F3ECFE; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .slider-controls button { background: #F3ECFE; border: none; padding: 5px 12px; border-radius: 10px; color: #7A42B8; font-weight: bold; }
+
+        /* Cat */
+        .cat-container { font-size: 3.5rem; margin: 10px 0; cursor: pointer; }
+        .achievement { background: #FFF8E7; padding: 8px; border-radius: 8px; font-size: 0.8rem; color: #8A6D0B; font-weight: bold; }
+
+        /* Cards & Scratch */
+        .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; margin: 10px 0; }
+        .flip-card { height: 110px; perspective: 600px; cursor: pointer; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.5s; transform-style: preserve-3d; }
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: 6px; font-size: 0.75rem; }
+        .flip-card-front { background-size: cover; background-position: center; color: white; font-weight: bold; text-shadow: 0 1px 3px #000; border: 2px solid #FFF; }
+        .flip-card-back { background: #FFF9E6; color: #4A3366; transform: rotateY(180deg); font-weight: bold; text-align: center; }
+
+        .scratch-container { display: flex; flex-direction: column; gap: 10px; width: 100%; align-items: center; }
+        .scratch-card { position: relative; width: 240px; height: 55px; border-radius: 8px; overflow: hidden; }
+        .scratch-reveal { position: absolute; width: 100%; height: 100%; background: #F3ECFE; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; color: #7A42B8; }
+        .scratch-canvas { position: absolute; top: 0; left: 0; }
+
+        /* Typewriter & Hold */
+        .typewriter-container { font-family: 'Caveat', cursive; font-size: 1.3rem; text-align: left; line-height: 1.4; color: #333; margin: 10px 0; }
+        .hold-heart-btn { background: #FF4757; color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; cursor: pointer; }
+
+        /* Ending Screen */
+        #endingScreen { background: #05020A; color: #fff; }
+        .stars-bg { position: absolute; width: 100%; height: 100%; background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%); }
+        .ending-content { z-index: 2; text-align: center; }
+        .glowing-purple-heart { font-size: 4rem; margin-bottom: 10px; }
+        .ending-text-flow { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: #E6D6FF; min-height: 50px; }
+        .peace-box { font-family: 'Caveat', cursive; font-size: 1.4rem; color: #D4AF37; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+    <button id="musicBtn" class="floating-music-btn" aria-label="Toggle Music">🎵</button>
+
+    <audio id="bgMusic" loop src="assets/music.mp3"></audio>
+    <audio id="meowSound" src="assets/meow.mp3"></audio>
+
+    <div id="toastMsg" class="toast-popup hidden">beyb justt clear the level naah 😭🎀</div>
+
+    <main class="app-container">
+
+        <!-- 0. LOADING SCREEN -->
+        <section id="loadingScreen" class="screen active">
+            <div class="loader-content">
+                <div class="beating-heart">💗</div>
+                <p id="loadingMsg" class="loading-text">💜 Loading clingy mode...</p>
+                <span class="sub-loader">Made for one person only.</span>
+            </div>
+        </section>
+
+        <!-- 1. BALLOON DELIVERY SCREEN -->
+        <section id="welcomeScreen" class="screen hidden">
+            <h1 class="main-title">Happy Girlfriend's Day</h1>
+            
+            <div id="deliveryStage" class="delivery-stage">
+                
+                <!-- SVG Vector Striped Hot Air Balloon -->
+                <div id="balloonGroup" class="balloon-svg-group">
+                    <svg viewBox="0 0 160 220" width="100%" height="100%">
+                        <path d="M 80 10 C 20 10 10 70 10 100 C 10 135 55 160 65 170 L 95 170 C 105 160 150 135 150 100 C 150 70 140 10 80 10 Z" fill="#915BD9"/>
+                        <path d="M 50 15 C 30 50 30 120 68 168" fill="none" stroke="#FF9EBB" stroke-width="18"/>
+                        <path d="M 110 15 C 130 50 130 120 92 168" fill="none" stroke="#FF9EBB" stroke-width="18"/>
+                        <line x1="68" y1="170" x2="68" y2="190" stroke="#8242CE" stroke-width="2"/>
+                        <line x1="92" y1="170" x2="92" y2="190" stroke="#8242CE" stroke-width="2"/>
+                        <rect x="62" y="190" width="36" height="25" rx="4" fill="#FFFFFF" stroke="#8242CE" stroke-width="2"/>
+                        <text x="80" y="208" font-size="12" text-anchor="middle">💌</text>
+                        <rect x="52" y="85" width="56" height="24" rx="12" fill="rgba(255,255,255,0.4)"/>
+                        <text x="80" y="102" font-size="14" text-anchor="middle">😭🫶</text>
+                    </svg>
+                </div>
+
+                <!-- Custom Lavender Envelope -->
+                <div id="customEnvelope" class="envelope-box">
+                    <div class="env-letter">
+                        <h2 class="letter-heading">Hey You!</h2>
+                        <p class="letter-sub">I made a little something<br>just for you...</p>
+                        <p class="letter-tag">happy girlfriend's day ✿</p>
+                    </div>
+
+                    <div class="env-pocket"></div>
+                    <div class="env-flap"></div>
+                    <div class="env-heart-seal">💜</div>
+                </div>
+
+            </div>
+
+            <p class="delivery-text">a delivery for you...</p>
+            <button id="startDeliveryBtn" class="glowing-btn">TAP ANYWHERE TO BEGIN</button>
+        </section>
+
+        <!-- LEVEL BASED EXPERIENCE -->
+        <section id="notebookScreen" class="screen hidden">
+            <div class="level-container">
+
+                <!-- LEVEL 1 -->
+                <div class="level-card active-level" data-level="1">
+                    <div class="tape top-left"></div>
+                    <div class="tape top-right"></div>
+                    <div class="badge-tag">✦ HAPPY GIRLFRIEND'S DAY</div>
+                    <h2>To My Favourite Person</h2>
+                    <span class="pill-badge">to the best one ✿</span>
+
+                    <div class="card-border-box">
+                        <h3>TOP SECRET</h3>
+                        <p class="for-text">For:</p>
+                        <p class="handwritten-title">The girl who's responsible for my smile.</p>
+                        <p class="warning">⚠️ Unauthorized reading is prohibited.<br><span>...unless you're her. 💜</span></p>
+                    </div>
+                    <button class="next-level-btn">Open Notebook →</button>
+                </div>
+
+                <!-- LEVEL 2 -->
+                <div class="level-card" data-level="2">
+                    <div class="handwritten-content">
+                        <p class="big-text">Well...</p>
+                        <p class="medium-text">You actually opened it.</p>
+                        <p class="medium-text">I knew you would. 🤏</p>
+                    </div>
+                    <span class="corner-note">(Don't skip 😾)</span>
+                    <button class="next-level-btn">Turn the page →</button>
+                </div>
+
+                <!-- LEVEL 3 -->
+                <div class="level-card" data-level="3">
+                    <h2>Pause. 😂</h2>
+                    <p class="sub-heading">Before we continue...</p>
+                    <div class="meme-slider">
+                        <div class="meme-slide active-slide">
+                            <div class="meme-box">🐱 Happy Happy Cat</div>
+                            <p class="caption">Me after getting your text.</p>
+                        </div>
+                        <div class="meme-slide">
+                            <div class="meme-box">🐻 Bear Hug</div>
+                            <p class="caption">Me pretending I'm not obsessed.</p>
+                        </div>
+                        <div class="meme-slide">
+                            <div class="meme-box">🦭 Cute Seal</div>
+                            <p class="caption">Me waiting for your reply.</p>
+                        </div>
+                        <div class="meme-slide">
+                            <div class="meme-box">🪿 Capybara</div>
+                            <p class="caption">Me acting calm (I'm not).</p>
+                        </div>
+                    </div>
+                    <div class="slider-controls">
+                        <button id="prevMeme">←</button>
+                        <button id="nextMeme">→</button>
+                    </div>
+                    <button class="next-level-btn">Turn the page →</button>
+                </div>
+
+                <!-- LEVEL 4 -->
+                <div class="level-card" data-level="4">
+                    <h2>Meet Happy Cat 🐱</h2>
+                    <p class="sub-heading">Annoy him 5 times to continue!</p>
+                    <div id="happyCat" class="cat-container">
+                        <div class="cat-avatar">🐱</div>
+                    </div>
+                    <div id="achievement" class="achievement hidden">
+                        🏆 Professional Cat Annoyer
+                    </div>
+                    <button class="next-level-btn locked">Turn the page →</button>
+                </div>
+
+                <!-- LEVEL 5 -->
+                <div class="level-card" data-level="5">
+                    <h2>"YOUR FAULT" 💜</h2>
+                    <p class="sub-heading">Flip all cards to unlock!</p>
+                    <div class="cards-grid">
+                        <div class="flip-card">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front" style="background-image: url('assets/photo1.jpg');"><span>YOUR FAULT.</span></div>
+                                <div class="flip-card-back"><p>Now every notification makes me hope it's you.</p></div>
+                            </div>
+                        </div>
+                        <div class="flip-card">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front" style="background-image: url('assets/photo2.jpg');"><span>YOUR FAULT.</span></div>
+                                <div class="flip-card-back"><p>I smile at my phone like an idiot.</p></div>
+                            </div>
+                        </div>
+                        <div class="flip-card">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front" style="background-image: url('assets/photo3.jpg');"><span>YOUR FAULT.</span></div>
+                                <div class="flip-card-back"><p>Songs don't sound the same anymore.</p></div>
+                            </div>
+                        </div>
+                        <div class="flip-card">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front" style="background-image: url('assets/photo4.jpg');"><span>FINAL CHARGE ⚖️</span></div>
+                                <div class="flip-card-back"><p>You're officially stuck with me. Forever. 💗</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="next-level-btn locked">Turn the page →</button>
+                </div>
+
+                <!-- LEVEL 6 -->
+                <div class="level-card" data-level="6">
+                    <h2>Scratch These Open 🎟️</h2>
+                    <p class="sub-heading">Scratch all coupons to continue!</p>
+                    <div class="scratch-container">
+                        <div class="scratch-card">
+                            <div class="scratch-reveal">🫂 Unlimited Hugs Coupon</div>
+                            <canvas class="scratch-canvas" width="240" height="55"></canvas>
+                        </div>
+                        <div class="scratch-card">
+                            <div class="scratch-reveal">💋 One Forehead Kiss</div>
+                            <canvas class="scratch-canvas" width="240" height="55"></canvas>
+                        </div>
+                        <div class="scratch-card">
+                            <div class="scratch-reveal">❤️ Emergency "Come Here"</div>
+                            <canvas class="scratch-canvas" width="240" height="55"></canvas>
+                        </div>
+                    </div>
+                    <button class="next-level-btn locked">Turn the page →</button>
+                </div>
+
+                <!-- LEVEL 7 -->
+                <div class="level-card" data-level="7">
+                    <div class="badge-tag">✦ ONE LAST THING</div>
+                    <h2>A Note For You</h2>
+                    <div class="typewriter-container">
+                        <p id="typewriterText">Every single moment with you feels like a quiet blessing. Thank you for being my favorite notification, my comfort place, and my biggest smile. I love you beybbb 💜</p>
+                    </div>
+                    <button id="holdHeartBtn" class="hold-heart-btn">Press & Hold ❤️</button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ENDING CINEMATIC -->
+        <section id="endingScreen" class="screen hidden">
+            <div id="endingStars" class="stars-bg"></div>
+            <div class="ending-content">
+                <div id="endingHeart" class="glowing-purple-heart hidden">💜</div>
+                <div id="endingText" class="ending-text-flow"></div>
+                <div id="finalCloseNote" class="final-close-note hidden">
+                    <p class="hug-title">Happy Girlfriend's Day beybbb🫂💗</p>
+                    <div class="peace-box">
+                        <p>Close this website.</p>
+                        <p>And come here. 🫂💜</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            let musicPlaying = false;
+            let catTapCount = 0;
+            let flippedCardsCount = 0;
+            let scratchedCardsCount = 0;
+            let currentLevel = 1;
+            let currentMemeIndex = 0;
+
+            const bgMusic = document.getElementById('bgMusic');
+            const meowSound = document.getElementById('meowSound');
+            const musicBtn = document.getElementById('musicBtn');
+            const toastMsg = document.getElementById('toastMsg');
+            
+            const loadingScreen = document.getElementById('loadingScreen');
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            const notebookScreen = document.getElementById('notebookScreen');
+            const endingScreen = document.getElementById('endingScreen');
+
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+
+            // Loading Engine
+            const loadingMsgs = [
+                "💜 Loading clingy mode...",
+                "🐱 Waking up Happy Cat...",
+                "🌸 Collecting forehead kisses...",
+                "✨ Hiding surprises...",
+                "❤️ Almost ready..."
+            ];
+            let msgIdx = 0;
+            const loadingMsgEl = document.getElementById('loadingMsg');
+            
+            const loadingInterval = setInterval(() => {
+                msgIdx = (msgIdx + 1) % loadingMsgs.length;
+                loadingMsgEl.textContent = loadingMsgs[msgIdx];
+            }, 700);
+
+            setTimeout(() => {
+                clearInterval(loadingInterval);
+                loadingScreen.classList.remove('active');
+                loadingScreen.classList.add('hidden');
+                welcomeScreen.classList.remove('hidden');
+                welcomeScreen.classList.add('active');
+            }, 2500);
+
+            // Audio Toggle
+            musicBtn.addEventListener('click', () => {
+                if (musicPlaying) {
+                    bgMusic.pause();
+                    musicBtn.textContent = '🎵';
+                } else {
+                    bgMusic.play().catch(() => {});
+                    musicBtn.textContent = '🎶';
+                }
+                musicPlaying = !musicPlaying;
+            });
+
+            function showToast() {
+                toastMsg.classList.remove('hidden');
+                setTimeout(() => toastMsg.classList.add('hidden'), 2200);
+            }
+
+            // Delivery Sequence
+            const startDeliveryBtn = document.getElementById('startDeliveryBtn');
+            const deliveryStage = document.getElementById('deliveryStage');
+
+            startDeliveryBtn.addEventListener('click', () => {
+                deliveryStage.classList.add('animating');
+
+                setTimeout(() => {
+                    deliveryStage.classList.add('open');
+                }, 1400);
+
+                setTimeout(() => {
+                    welcomeScreen.classList.remove('active');
+                    welcomeScreen.classList.add('hidden');
+                    notebookScreen.classList.remove('hidden');
+                    notebookScreen.classList.add('active');
+                }, 3200);
+            });
+
+            // Level Navigation
+            const levelBtns = document.querySelectorAll('.next-level-btn');
+            levelBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (btn.classList.contains('locked')) {
+                        showToast();
+                        return;
+                    }
+
+                    const currentCard = document.querySelector(`.level-card[data-level="${currentLevel}"]`);
+                    currentCard.classList.remove('active-level');
+
+                    currentLevel++;
+                    const nextCard = document.querySelector(`.level-card[data-level="${currentLevel}"]`);
+                    if (nextCard) nextCard.classList.add('active-level');
+                });
+            });
+
+            // Meme Slider
+            const memeSlides = document.querySelectorAll('.meme-slide');
+            document.getElementById('nextMeme').addEventListener('click', () => {
+                memeSlides[currentMemeIndex].classList.remove('active-slide');
+                currentMemeIndex = (currentMemeIndex + 1) % memeSlides.length;
+                memeSlides[currentMemeIndex].classList.add('active-slide');
+            });
+
+            document.getElementById('prevMeme').addEventListener('click', () => {
+                memeSlides[currentMemeIndex].classList.remove('active-slide');
+                currentMemeIndex = (currentMemeIndex - 1 + memeSlides.length) % memeSlides.length;
+                memeSlides[currentMemeIndex].classList.add('active-slide');
+            });
+
+            // Happy Cat Task
+            const happyCat = document.getElementById('happyCat');
+            const achievement = document.getElementById('achievement');
+            happyCat.addEventListener('click', () => {
+                catTapCount++;
+                meowSound.currentTime = 0;
+                meowSound.play().catch(() => {});
+
+                if (catTapCount >= 5) {
+                    achievement.classList.remove('hidden');
+                    document.querySelector('.level-card[data-level="4"] .next-level-btn').classList.remove('locked');
+                    confetti({ particleCount: 50, spread: 50 });
+                }
+            });
+
+            // Flip Cards Task
+            const flipCards = document.querySelectorAll('.flip-card');
+            flipCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    if (!card.classList.contains('flipped')) {
+                        card.classList.add('flipped');
+                        flippedCardsCount++;
+
+                        if (flippedCardsCount >= flipCards.length) {
+                            document.querySelector('.level-card[data-level="5"] .next-level-btn').classList.remove('locked');
+                            confetti({ particleCount: 50, spread: 50 });
+                        }
+                    }
+                });
+            });
+
+            // Scratch Cards Task
+            const scratchCanvases = document.querySelectorAll('.scratch-canvas');
+            scratchCanvases.forEach(canvas => {
+                const ctxScratch = canvas.getContext('2d');
+                ctxScratch.fillStyle = '#D2B3FF';
+                ctxScratch.fillRect(0, 0, canvas.width, canvas.height);
+
+                let isScratching = false;
+                let isCleared = false;
+
+                const scratch = (e) => {
+                    if (!isScratching) return;
+                    const rect = canvas.getBoundingClientRect();
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                    const x = clientX - rect.left;
+                    const y = clientY - rect.top;
+
+                    ctxScratch.globalCompositeOperation = 'destination-out';
+                    ctxScratch.beginPath();
+                    ctxScratch.arc(x, y, 16, 0, Math.PI * 2);
+                    ctxScratch.fill();
+
+                    if (!isCleared) {
+                        isCleared = true;
+                        scratchedCardsCount++;
+                        if (scratchedCardsCount >= scratchCanvases.length) {
+                            document.querySelector('.level-card[data-level="6"] .next-level-btn').classList.remove('locked');
+                            confetti({ particleCount: 50, spread: 50 });
+                        }
+                    }
+                };
+
+                canvas.addEventListener('mousedown', () => isScratching = true);
+                canvas.addEventListener('mouseup', () => isScratching = false);
+                canvas.addEventListener('mousemove', scratch);
+                canvas.addEventListener('touchstart', () => isScratching = true);
+                canvas.addEventListener('touchend', () => isScratching = false);
+                canvas.addEventListener('touchmove', scratch);
+            });
+
+            // Hold Button Ending Trigger
+            const holdBtn = document.getElementById('holdHeartBtn');
+            let holdTimer;
+            const startHold = () => { holdTimer = setTimeout(triggerEndingCinematic, 2200); };
+            const endHold = () => clearTimeout(holdTimer);
+
+            holdBtn.addEventListener('mousedown', startHold);
+            holdBtn.addEventListener('touchstart', startHold);
+            holdBtn.addEventListener('mouseup', endHold);
+            holdBtn.addEventListener('touchend', endHold);
+
+            function triggerEndingCinematic() {
+                notebookScreen.classList.remove('active');
+                notebookScreen.classList.add('hidden');
+                endingScreen.classList.remove('hidden');
+                endingScreen.classList.add('active');
+
+                const endingText = document.getElementById('endingText');
+                const endingHeart = document.getElementById('endingHeart');
+                const finalCloseNote = document.getElementById('finalCloseNote');
+
+                const lines = [
+                    "One last thing...",
+                    "If I had to fall in love all over again...",
+                    "I'd still choose you.",
+                    "And again."
+                ];
+                let lineIdx = 0;
+
+                function showNextLine() {
+                    if (lineIdx < lines.length) {
+                        endingText.style.opacity = 0;
+                        setTimeout(() => {
+                            endingText.textContent = lines[lineIdx];
+                            endingText.style.opacity = 1;
+                            lineIdx++;
+                            setTimeout(showNextLine, 2000);
+                        }, 500);
+                    } else {
+                        setTimeout(() => {
+                            endingText.style.display = 'none';
+                            endingHeart.classList.remove('hidden');
+                            setTimeout(() => finalCloseNote.classList.remove('hidden'), 1000);
+                        }, 800);
+                    }
+                }
+                showNextLine();
+            }
+
+            // Canvas Sparkle Particles
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            function createParticle(x, y) {
+                if (!x || !y) return;
+                const shapes = ['🌸', '✨', '💜'];
+                particles.push({
+                    x: x, y: y,
+                    size: Math.random() * 12 + 8,
+                    text: shapes[Math.floor(Math.random() * shapes.length)],
+                    alpha: 1,
+                    vy: -Math.random() * 2 - 1,
+                    vx: (Math.random() - 0.5) * 2
+                });
+            }
+
+            window.addEventListener('touchstart', (e) => createParticle(e.touches[0].clientX, e.touches[0].clientY));
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach((p, index) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.alpha -= 0.02;
+                    ctx.globalAlpha = Math.max(p.alpha, 0);
+                    ctx.font = `${p.size}px serif`;
+                    ctx.fillText(p.text, p.x, p.y);
+                    if (p.alpha <= 0) particles.splice(index, 1);
+                });
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+        });
+    </script>
+</body>
+</html>
+
