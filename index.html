@@ -987,8 +987,9 @@
                 checkMemesComplete();
             });
 
-            memePrevBtn.addEventListener('click', () => {
+                        memePrevBtn.addEventListener('click', () => {
                 if (currentMemeIndex === 0 && !meme13Reached) {
+                    showToastCustom("Eyy, where are you rushing to? Go forward first beybb! 😼");
                     return; 
                 }
 
@@ -997,7 +998,7 @@
                 memeSlides[currentMemeIndex].classList.add('active-slide');
                 viewedMemes.add(currentMemeIndex);
                 checkMemesComplete();
-            });
+            }):
 
             // LEVEL 6: SLAP HIM 5 TIMES & SWAP TO CRYING MEME IMAGE
             const happyCat = document.getElementById('happyCat');
